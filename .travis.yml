@@ -18,7 +18,7 @@ script:
   - nose2 --with-coverage
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then curl -sSL https://download.sourceclear.com/ci.sh | bash; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then bash <(curl -sSL https://download.sourceclear.com/ci.sh); fi
 deploy:
   - provider: pypi
     skip_upload_docs: true
