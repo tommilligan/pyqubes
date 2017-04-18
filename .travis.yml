@@ -29,7 +29,7 @@ deploy:
       tags: true 
       condition: $TRAVIS_PYTHON_VERSION = "2.7"
 addons:
-  srcclr: [ $TRAVIS_PYTHON_VERSION = "2.7" ]
+  srcclr: $TRAVIS_PYTHON_VERSION = "2.7"
 notifications:
   email: false
 
