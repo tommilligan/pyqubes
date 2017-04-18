@@ -7,7 +7,7 @@
 
 [![Travis branch](https://img.shields.io/travis/tommilligan/pyqubes/develop.svg)](https://travis-ci.org/tommilligan/pyqubes)
 [![codecov](https://codecov.io/gh/tommilligan/pyqubes/branch/develop/graph/badge.svg)](https://codecov.io/gh/tommilligan/pyqubes)
-[![Requirements Status](https://requires.io/github/tommilligan/pyqubes/requirements.svg?branch=develop)](https://codeclimate.com/github/tommilligan/synaptic-scout/)
+[![Requirements Status](https://requires.io/github/tommilligan/pyqubes/requirements.svg?branch=develop)](https://requires.io/github/tommilligan/pyqubes/requirements/?branch=develop)
 
 
 ## Installation
