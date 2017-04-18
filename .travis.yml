@@ -2,11 +2,10 @@ language: python
 python:
   - "2.6"
   - "2.7"
-  - "2.2"
-  - "2.3"
-  - "2.4"
-  - "2.5"
-  - "2.6"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
   - "3.5-dev"
   - "3.6"
   - "3.6-dev"
@@ -30,7 +29,7 @@ deploy:
       tags: true 
       condition: $TRAVIS_PYTHON_VERSION = "2.7"
 addons:
-  srcclr: true
+  srcclr: [ $TRAVIS_PYTHON_VERSION = "2.7" ]
 notifications:
   email: false
 
