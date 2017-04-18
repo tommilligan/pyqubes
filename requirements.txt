@@ -1,0 +1,13 @@
+# App
+
+# Docs
+
+Sphinx >= 1.5.3
+sphinx-argparse >= 0.1.17
+sphinx_rtd_theme >= 0.1.9
+
+# Test
+
+nose2 >= 0.6.5
+codeclimate-test-reporter >= 0.2.1
+cov-core >= 1.15.0
