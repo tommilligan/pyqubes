@@ -1,0 +1,35 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - pypy
+  - "2.2"
+  - "2.3"
+  - "2.4"
+  - "2.5"
+  - "2.6"
+  - "3.5-dev"
+  - "3.6"
+  - "3.6-dev"
+  - "3.7-dev"
+- pypy3install:
+  - pip install -r requirements.txt
+script:
+  - nose2 --with-coverage
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+deploy:
+  - provider: pypi
+    skip_upload_docs: true
+    distributions: sdist
+    user: tommilligan
+    password: $PYPI_PASSWORD
+    on:
+      branch: master
+      tags: true 
+      condition: $TRAVIS_PYTHON_VERSION = "2.7"
+addons:
+  srcclr: true
+notifications:
+  email: false
+
