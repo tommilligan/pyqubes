@@ -22,3 +22,13 @@ def object_logger(obj):
     logger = logging.getLogger(fullname)
     return logger
 
+def flatten_list(nested_list):
+    '''
+    Flatten a nested list one level.
+
+    :param list nested_list: A nested list
+    :rtype: list
+    '''
+    flat_list = [item for sublist in nested_list for item in sublist]
+    return flat_list
+

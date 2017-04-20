@@ -18,4 +18,8 @@ class TestQvmRun(unittest.TestCase):
         command_args = pyqubes.qvm.qvm_run("echo foobar", user="monty")
         self.assertEqual(command_args, ["qvm-run", "echo foobar", "--user", "monty"])
     
+    def test_qvm_run_exclude(self):
+        command_args = pyqubes.qvm.qvm_run("echo foobar", exclude=["penguin", "rabbit"])
+        self.assertEqual(command_args, ["qvm-run", "echo foobar", "--exclude", "penguin", "--exclude", "rabbit"])
+    
 

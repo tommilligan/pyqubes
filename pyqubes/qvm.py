@@ -8,7 +8,7 @@ def qvm_run(command,
             user='',
             tray=False,
             all=False,
-            exclude=[], # turn into repeated kwargs
+            exclude=[],
             wait=False,
             shutdown=False,
             pause=False,
@@ -32,6 +32,11 @@ def qvm_run(command,
         '--pass-io': pass_io,
         '--force': force
     }))
-    if pyqubes.validate.linux_username(user):
-        command_args.extend(['--user', user])
+    command_args.extend(pyqubes.compile.flags_store({
+        '--user': user if pyqubes.validate.linux_username(user) else False,
+        '--localcmd': localcmd
+    }))
+    command_args.extend(pyqubes.compile.flags_store_iterable({
+        '--exclude': exclude
+    }))
     return command_args
