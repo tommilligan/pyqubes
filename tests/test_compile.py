@@ -2,6 +2,8 @@
 
 import unittest
 
+import six
+
 import pyqubes.compile
 
 
@@ -12,7 +14,7 @@ class TestCompileFlagsBoolean(unittest.TestCase):
             "--bar": False
         }
         compiled_flags = pyqubes.compile.flags_boolean(flags)
-        self.assertItemsEqual(compiled_flags, ["--foo"])
+        six.assertCountEqual(self, compiled_flags, ["--foo"])
 
     def test_compile_flags_boolean_complex(self):
         flags = {
@@ -21,12 +23,12 @@ class TestCompileFlagsBoolean(unittest.TestCase):
             "--eggs": None,
         }
         compiled_flags = pyqubes.compile.flags_boolean(flags)
-        self.assertItemsEqual(compiled_flags, ["--bar"])
+        six.assertCountEqual(self, compiled_flags, ["--bar"])
 
     def test_compile_flags_boolean_empty(self):
         flags = {}
         compiled_flags = pyqubes.compile.flags_boolean(flags)
-        self.assertItemsEqual(compiled_flags, [])
+        six.assertCountEqual(self, compiled_flags, [])
 
 class TestCompileFlagsStore(unittest.TestCase):
     def test_compile_flags_store_single(self):
@@ -52,7 +54,7 @@ class TestCompileFlagsStore(unittest.TestCase):
     def test_compile_flags_store_empty(self):
         flags = {}
         compiled_flags = pyqubes.compile.flags_store(flags)
-        self.assertItemsEqual(compiled_flags, [])
+        six.assertCountEqual(self, compiled_flags, [])
 
 class TestCompileFlagsStoreIterable(unittest.TestCase):
     def test_compile_flags_store_iterable_single(self):
@@ -68,7 +70,7 @@ class TestCompileFlagsStoreIterable(unittest.TestCase):
             "--foo": [],
         }
         compiled_flags = pyqubes.compile.flags_store_iterable(flags)
-        self.assertItemsEqual(compiled_flags, [])
+        six.assertCountEqual(self, compiled_flags, [])
 
     def test_compile_flags_store_iterable_single_invalid(self):
         flags = {
@@ -92,5 +94,5 @@ class TestCompileFlagsStoreIterable(unittest.TestCase):
     def test_compile_flags_store_iterable_empty(self):
         flags = {}
         compiled_flags = pyqubes.compile.flags_store_iterable(flags)
-        self.assertItemsEqual(compiled_flags, [])
+        six.assertCountEqual(self, compiled_flags, [])
 
