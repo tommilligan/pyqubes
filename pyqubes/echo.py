@@ -14,7 +14,7 @@ def call(args, file=None):
     if file is None:
         file = sys.stdout
 
-    if isinstance(args, six.string_types + six.text_type):
+    if isinstance(args, six.string_types + (six.text_type,)):
         args = [args]
     
     six.print_(*args, file=file, flush=True)
