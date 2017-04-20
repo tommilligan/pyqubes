@@ -20,6 +20,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
+        'six >= 1.10.0'
     ],
     tests_require=['nose2 >= 0.6.5'],
     test_suite='nose2.collector.collector',
@@ -32,6 +33,7 @@ setup(
             'codeclimate-test-reporter >= 0.2.1',
             'cov-core >= 1.15.0',
             'nose2 >= 0.6.5',
+            'mock >= 2.0.0'
         ]
     },
     entry_points={
