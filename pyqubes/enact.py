@@ -1,8 +1,10 @@
+import subprocess
 import sys
 
 import six
 
-def call(args, file=None):
+
+def echo(args, file=None):
     '''
     Echo a list of arguments (as given to ``subprocess.call``) to the given stream.
 
@@ -18,3 +20,10 @@ def call(args, file=None):
         args = [args]
     
     six.print_(*args, file=file, flush=True)
+
+def call(args):
+    '''
+    Thin wrapper for builtin subprocess.call
+    '''
+    return subprocess.check_call(args)
+
