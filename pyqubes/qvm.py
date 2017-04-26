@@ -33,12 +33,12 @@ def qvm_run(command,
         '--force': force
     }))
     command_args.extend(pyqubes.compile.flags_store({
-        '--user': user if pyqubes.validate.linux_username(user) else False,
+        '--user': pyqubes.validate.linux_username(user) if user else None,
         '--localcmd': localcmd
     }))
-    command_args.extend(pyqubes.compile.flags_store_iterable({
-        '--exclude': exclude
-    }))
+    [command_args.extend(pyqubes.compile.flags_store({
+        '--exclude': pyqubes.validate.linux_hostname(exclude_single) if exclude_single else None
+    })) for exclude_single in exclude]
     return command_args
 
 def qvm_shutdown(vm_name,
@@ -50,14 +50,14 @@ def qvm_shutdown(vm_name,
     '''
     qvm-shutdown
     '''
-    command_args = ["qvm-shutdown", vm_name]
+    command_args = ["qvm-shutdown", pyqubes.validate.linux_username(vm_name)]
     command_args.extend(pyqubes.compile.flags_boolean({
         '--quiet': quiet,
         '--force': force,
         '--wait': wait,
         '--all': all_vms
     }))
-    command_args.extend(pyqubes.compile.flags_store_iterable({
-        '--exclude': exclude
-    }))
+    [command_args.extend(pyqubes.compile.flags_store({
+        '--exclude': pyqubes.validate.linux_hostname(exclude_single) if exclude_single else None
+    })) for exclude_single in exclude]
     return command_args

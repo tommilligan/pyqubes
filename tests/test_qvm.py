@@ -18,9 +18,17 @@ class TestQvmRun(unittest.TestCase):
         command_args = pyqubes.qvm.qvm_run("echo foobar", user="monty")
         self.assertEqual(command_args, ["qvm-run", "echo foobar", "--user", "monty"])
     
+    def test_qvm_run_user_invalid(self):
+        with self.assertRaises(ValueError):
+            command_args = pyqubes.qvm.qvm_run("echo foobar", user="monty || bad")
+    
     def test_qvm_run_exclude(self):
         command_args = pyqubes.qvm.qvm_run("echo foobar", exclude=["penguin", "rabbit"])
         self.assertEqual(command_args, ["qvm-run", "echo foobar", "--exclude", "penguin", "--exclude", "rabbit"])
+    
+    def test_qvm_run_exclude_invalid(self):
+        with self.assertRaises(ValueError):
+            command_args = pyqubes.qvm.qvm_run("echo foobar", exclude=["penguin", "rabbit || bad"])
     
 class TestQvmShutdown(unittest.TestCase):
     def test_qvm_shutdown_simple(self):
