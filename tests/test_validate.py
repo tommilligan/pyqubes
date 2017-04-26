@@ -57,7 +57,7 @@ class TestvalidateLinuxHostname(unittest.TestCase):
         valid_input_string = pyqubes.validate.linux_hostname(input_string)
         self.assertFalse(valid_input_string)
 
-    def test_validate_linux_hostname_invalid_period(self):
+    def test_validate_linux_hostname_invalid_trailing(self):
         input_string = "trailing."
         valid_input_string = pyqubes.validate.linux_hostname(input_string)
         self.assertFalse(valid_input_string)
