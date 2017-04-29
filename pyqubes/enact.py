@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -21,9 +22,18 @@ def echo(args, file=None):
     
     six.print_(*args, file=file, flush=True)
 
-def call(args):
+def call(args, **kwargs):
     '''
     Thin wrapper for builtin subprocess.call
     '''
-    return subprocess.check_call(args)
+    return subprocess.check_call(args, **kwargs)
+
+def call_quiet(args):
+    '''
+    Uses the ``call`` function, but throws away stdout and stderr.
+
+    Should be used for internal unit tests wherever possible.
+    '''
+    with open(os.devnull, 'w') as null_file:
+        return call(args, stdout=null_file, stderr=null_file)
 

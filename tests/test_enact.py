@@ -43,18 +43,18 @@ class TestEnactEchoStream(unittest.TestCase):
 
 class TestEnactCall(unittest.TestCase):
     def test_enact_call_list(self):
-        return_value = pyqubes.enact.call(["echo", "spam"])
+        return_value = pyqubes.enact.call_quiet(["echo", "spam"])
         self.assertEqual(return_value, 0)
 
     def test_enact_call_string(self):
-        return_value = pyqubes.enact.call("echo")
+        return_value = pyqubes.enact.call_quiet("echo")
         self.assertEqual(return_value, 0)
 
     def test_enact_call_error(self):
         with self.assertRaises(subprocess.CalledProcessError):
-            return_value = pyqubes.enact.call(["cat", "/"])
+            return_value = pyqubes.enact.call_quiet(["cat", "/"])
 
     def test_enact_call_harmful(self):
         with self.assertRaises(OSError):
-            return_value = pyqubes.enact.call("echo harmless || echo harmful")
+            return_value = pyqubes.enact.call_quiet("echo harmless || echo harmful")
 
