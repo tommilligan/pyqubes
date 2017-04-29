@@ -2,7 +2,8 @@ import pyqubes.compile
 import pyqubes.utils
 import pyqubes.validate
 
-def qvm_run(command,
+def qvm_run(vm_name,
+            command,
             quiet=False,
             auto=False,
             user='',
@@ -19,7 +20,7 @@ def qvm_run(command,
     '''
     qvm-run
     '''
-    command_args = ["qvm-run", command]
+    command_args = ["qvm-run", vm_name, command]
     command_args.extend(pyqubes.compile.flags_boolean({
         '--quiet': quiet,
         '--auto': auto,
