@@ -21,6 +21,7 @@ class VM(object):
         return self.enact_function(args)
 
     def run(self, command, **kwargs):
+        command = "'{0}'".format(command)
         kwargs.update({
             'pass_io': True
         })
@@ -36,9 +37,9 @@ class TemplateVM(VM):
 
     def update(self):
         if self.operating_system in pyqubes.constants.FEDORA_ALL:
-            update_command = "'sudo dnf check-update && sudo dnf -y upgrade'"
+            update_command = "sudo dnf check-update && sudo dnf -y upgrade"
         elif self.operating_system in pyqubes.constants.DEBIAN_ALL:
-            update_command = "'sudo apt-get update && sudo apt-get -y upgrade'"
+            update_command = "sudo apt-get update && sudo apt-get -y upgrade"
         else:
             raise ValueError("Could not update TemplateVM '{0}': Unknown OS '{1}'".format(self.name, self.operating_system))
         return self.run(update_command)
