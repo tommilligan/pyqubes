@@ -11,7 +11,7 @@ class TestQvmRun(unittest.TestCase):
         self.assertEqual(command_args, ["qvm-run", "pear", "echo foobar"])
     
     def test_qvm_run_flags(self):
-        command_args = pyqubes.qvm.qvm_run("pear", "echo foobar", pass_io=True)
+        command_args = pyqubes.qvm.qvm_run("pear", "echo foobar", pass_io=True, tray=False)
         self.assertEqual(command_args, ["qvm-run", "pear", "echo foobar", "--pass-io"])
     
     def test_qvm_run_user(self):
