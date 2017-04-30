@@ -115,6 +115,12 @@ class VM(object):
         '''
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, **kwargs))
 
+    def remove(self, **kwargs):
+        '''
+        Remove the VM
+        '''
+        return self.enact(pyqubes.qvm.qvm_remove(self.name, **kwargs))
+
     # Helper functions
 
     def internet_online(self):

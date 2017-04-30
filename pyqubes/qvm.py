@@ -127,3 +127,18 @@ def qvm_clone(vm_name,
     }))
     return command_args
 
+def qvm_remove(vm_name,
+            quiet=False,
+            just_db=False,
+            force_root=False):
+    '''
+    qvm-remove
+    '''
+    command_args = ["qvm-remove", pyqubes.validate.linux_hostname(vm_name)]
+    command_args.extend(pyqubes.compile.flags_boolean({
+        '--quiet': quiet,
+        '--just-db': just_db,
+        '--force-root': force_root
+    }))
+    return command_args
+

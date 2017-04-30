@@ -51,6 +51,10 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.vm.firewall(list_view=True)
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--list'])
 
+    def test_vm_vm_remove(self):
+        self.vm.remove()
+        self.enact_patch.assert_called_once_with(['qvm-remove', 'bounding'])
+
     def test_vm_vm_run(self):
         self.vm.run("echo 'foo bar'")
         self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '"echo \'foo bar\'"', '--pass-io'])

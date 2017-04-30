@@ -86,3 +86,12 @@ class TestQvmClone(unittest.TestCase):
     def test_qvm_clone_path(self):
         pass
 
+class TestQvmRemove(unittest.TestCase):
+    def test_qvm_remove_simple(self):
+        command_args = pyqubes.qvm.qvm_remove("pear")
+        self.assertEqual(command_args, ["qvm-remove", "pear"])
+    
+    def test_qvm_remove_flags(self):
+        command_args = pyqubes.qvm.qvm_remove("pear", just_db=True)
+        self.assertEqual(command_args, ["qvm-remove", "pear", "--just-db"])
+
