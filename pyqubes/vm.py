@@ -9,9 +9,9 @@ import pyqubes.qvm
 import pyqubes.validate
 
 
-class InternetConnection(object):
+class VMMagicInternet(object):
     '''
-    Helper class for opening and closing the VM fireall automatically.abs
+    Helper class for opening and closing the VM fireall automatically
     
     :param vm: A ``VM`` instance.
     '''
@@ -23,6 +23,21 @@ class InternetConnection(object):
 
     def __exit__(self, type, value, traceback):
         self.vm.internet_offline()
+
+class VMMagicSupervise(object):
+    '''
+    Helper class for starting and shutting down the VM automatically
+    
+    :param vm: A ``VM`` instance.
+    '''
+    def __init__(self, vm):
+        self.vm = vm
+
+    def __enter__(self):
+        self.vm.start()
+
+    def __exit__(self, type, value, traceback):
+        self.vm.shutdown()
 
 class VM(object):
     '''
@@ -37,7 +52,9 @@ class VM(object):
         self.name = pyqubes.validate.linux_hostname(name)
         self.operating_system = operating_system
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
-        self.internet = InternetConnection(self)
+        
+        self.supervise = VMMagicSupervise(self)
+        self.internet = VMMagicInternet(self)
     
     def enact(self, args):
         '''
@@ -48,11 +65,20 @@ class VM(object):
         '''
         return self.enact_function(args)
 
+    # Direct command bindings
+
     def run(self, command, **kwargs):
         '''
-        Run a command on the VM
+        Run a command on the VM.
+
+        Commands are automatically encapsulated in double quotes::
+
+            vm = TemplateVM('spam')
+            vm.run("echo 'foo bar'")
+            # qvm-run spam "echo 'foo bar'
+        
         '''
-        command = "'{0}'".format(command)
+        command = "\"{0}\"".format(command)
         kwargs.update({
             'pass_io': True
         })
@@ -66,7 +92,18 @@ class VM(object):
 
     def start(self, **kwargs):
         '''
-        Start the VM
+        Start the VM explicitly.
+
+        In most cases you should use``with vm.internet``::
+
+            vm = TemplateVM('foo')
+            vm.start()
+            # Templates are offline be default
+            with vm.internet as inet:
+                # Template now has unrestricted internet access
+                vm.update()
+            # Firewall is restored automatically
+        
         '''
         return self.enact(pyqubes.qvm.qvm_start(self.name, **kwargs))
 
@@ -75,6 +112,14 @@ class VM(object):
         Edit the VM firewall
         '''
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, **kwargs))
+
+    def clone(self, clone_name, **kwargs):
+        '''
+        Clone the VM
+        '''
+        return self.enact(pyqubes.qvm.qvm_clone(self.name, clone_name, **kwargs))
+
+    # Helper functions
 
     def internet_online(self):
         '''

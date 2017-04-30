@@ -51,6 +51,14 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.vm.firewall(list_view=True)
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--list'])
 
+    def test_vm_vm_clone(self):
+        self.vm.clone('rebounding', quiet=True)
+        self.enact_patch.assert_called_once_with(['qvm-clone', 'bounding', 'rebounding', '--quiet'])
+
+    def test_vm_vm_run(self):
+        self.vm.run("echo 'foo bar'")
+        self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '"echo \'foo bar\'"', '--pass-io'])
+
 class TestVMVMInternet(unittest.TestCase):
     def setUp(self):
         self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
@@ -65,18 +73,33 @@ class TestVMVMInternet(unittest.TestCase):
         self.vm.internet_offline()
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'deny'])
 
-class TestVMInternetConnection(unittest.TestCase):
+class TestVMVMMagicInternet(unittest.TestCase):
     def setUp(self):
-        self.online_patch = patch.object(pyqubes.vm.VM, 'internet_online').start()
-        self.offline_patch = patch.object(pyqubes.vm.VM, 'internet_offline').start()
+        self.enter_patch = patch.object(pyqubes.vm.VM, 'internet_online').start()
+        self.exit_patch = patch.object(pyqubes.vm.VM, 'internet_offline').start()
         self.addCleanup(patch.stopall)
-        self.vm = pyqubes.vm.TemplateVM("internetter")
+        self.vm = pyqubes.vm.TemplateVM("magic")
 
-    def test_vm_internet_connection_magic(self):
+    def test_vm_vm_magic_internet(self):
         with self.vm.internet as inet:
-            self.online_patch.assert_called_once_with()
-            self.offline_patch.assert_not_called()
-        self.offline_patch.assert_called_once_with()
+            self.enter_patch.assert_called_once_with()
+            self.exit_patch.assert_not_called()
+        self.enter_patch.assert_called_once_with()
+        self.exit_patch.assert_called_once_with()
+
+class TestVMVMMagicSupervise(unittest.TestCase):
+    def setUp(self):
+        self.enter_patch = patch.object(pyqubes.vm.VM, 'start').start()
+        self.exit_patch = patch.object(pyqubes.vm.VM, 'shutdown').start()
+        self.addCleanup(patch.stopall)
+        self.vm = pyqubes.vm.TemplateVM("magic")
+
+    def test_vm_vm_magic_supervise(self):
+        with self.vm.supervise as supervisor:
+            self.enter_patch.assert_called_once_with()
+            self.exit_patch.assert_not_called()
+        self.enter_patch.assert_called_once_with()
+        self.exit_patch.assert_called_once_with()
 
 class TestVMTemplateVMUpdate(unittest.TestCase):
     def setUp(self):
@@ -86,12 +109,12 @@ class TestVMTemplateVMUpdate(unittest.TestCase):
     def test_vm_template_vm_update_fedora(self):
         template_vm = pyqubes.vm.TemplateVM("fedora.spam")
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', "'sudo dnf check-update && sudo dnf -y upgrade'", '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', '"sudo dnf check-update && sudo dnf -y upgrade"', '--pass-io'])
 
     def test_vm_template_vm_update_debian(self):
         template_vm = pyqubes.vm.TemplateVM("debian.spam", operating_system=pyqubes.constants.DEBIAN_8)
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', "'sudo apt-get update && sudo apt-get -y upgrade'", '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', '"sudo apt-get update && sudo apt-get -y upgrade"', '--pass-io'])
 
     def test_vm_template_vm_update_invalid(self):
         with self.assertRaises(ValueError):

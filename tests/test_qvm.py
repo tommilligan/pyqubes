@@ -74,3 +74,15 @@ class TestQvmStart(unittest.TestCase):
     def test_qvm_start_config(self):
         pass
 
+class TestQvmClone(unittest.TestCase):
+    def test_qvm_clone_simple(self):
+        command_args = pyqubes.qvm.qvm_clone("pear", "plum")
+        self.assertEqual(command_args, ["qvm-clone", "pear", "plum"])
+    
+    def test_qvm_clone_flags(self):
+        command_args = pyqubes.qvm.qvm_clone("pear", "plum", quiet=True)
+        self.assertEqual(command_args, ["qvm-clone", "pear", "plum", "--quiet"])
+    
+    def test_qvm_clone_path(self):
+        pass
+

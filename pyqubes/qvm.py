@@ -111,3 +111,19 @@ def qvm_start(vm_name,
     }))
     return command_args
 
+def qvm_clone(vm_name,
+            clone_name,
+            quiet=False,
+            path=''):
+    '''
+    qvm-clone
+    '''
+    command_args = ["qvm-clone", pyqubes.validate.linux_hostname(vm_name), pyqubes.validate.linux_hostname(clone_name)]
+    command_args.extend(pyqubes.compile.flags_boolean({
+        '--quiet': quiet
+    }))
+    command_args.extend(pyqubes.compile.flags_store({
+        '--path': path
+    }))
+    return command_args
+
