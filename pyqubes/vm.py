@@ -50,7 +50,9 @@ class VM(object):
     '''
     def __init__(self, name, proactive=False, operating_system=pyqubes.constants.FEDORA_23):
         self.name = pyqubes.validate.linux_hostname(name)
+        self.proactive = proactive
         self.operating_system = operating_system
+        
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
         
         self.supervise = VMMagicSupervise(self)
@@ -113,12 +115,6 @@ class VM(object):
         '''
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, **kwargs))
 
-    def clone(self, clone_name, **kwargs):
-        '''
-        Clone the VM
-        '''
-        return self.enact(pyqubes.qvm.qvm_clone(self.name, clone_name, **kwargs))
-
     # Helper functions
 
     def internet_online(self):
@@ -151,6 +147,16 @@ class TemplateVM(VM):
     '''
     def __init__(self, *args, **kwargs):
         super(TemplateVM, self).__init__(*args, **kwargs)
+
+    def clone(self, clone_name, **kwargs):
+        '''
+        Clone the VM
+
+        :param string clone_name: Name of the new VM
+        :returns: The new ``TemplateVM`` instance
+        '''
+        self.enact(pyqubes.qvm.qvm_clone(self.name, clone_name, **kwargs))
+        return TemplateVM(clone_name, proactive=self.proactive, operating_system=self.operating_system)
 
     def update(self):
         '''

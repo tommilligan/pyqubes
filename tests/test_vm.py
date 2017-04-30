@@ -51,27 +51,17 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.vm.firewall(list_view=True)
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--list'])
 
-    def test_vm_vm_clone(self):
-        self.vm.clone('rebounding', quiet=True)
-        self.enact_patch.assert_called_once_with(['qvm-clone', 'bounding', 'rebounding', '--quiet'])
-
     def test_vm_vm_run(self):
         self.vm.run("echo 'foo bar'")
         self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '"echo \'foo bar\'"', '--pass-io'])
 
-class TestVMVMInternet(unittest.TestCase):
-    def setUp(self):
-        self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
-        self.addCleanup(patch.stopall)
-        self.vm = pyqubes.vm.TemplateVM("networker")
-
     def test_vm_vm_internet_online(self):
         self.vm.internet_online()
-        self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'allow'])
+        self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--policy', 'allow'])
 
     def test_vm_vm_internet_offline(self):
         self.vm.internet_offline()
-        self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'deny'])
+        self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--policy', 'deny'])
 
 class TestVMVMMagicInternet(unittest.TestCase):
     def setUp(self):
@@ -120,6 +110,19 @@ class TestVMTemplateVMUpdate(unittest.TestCase):
         with self.assertRaises(ValueError):
             template_vm = pyqubes.vm.TemplateVM("nonexistent.spam", operating_system='nonexistent')
             template_vm.update()
+
+class TestVMTemplateVMBoundFunctions(unittest.TestCase):
+    def setUp(self):
+        self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
+        self.addCleanup(patch.stopall)
+        self.template_vm = pyqubes.vm.TemplateVM("one.thing", proactive=True, operating_system='arbitrary-value')
+
+    def test_vm_template_vm_clone(self):
+        template_vm_clone = self.template_vm.clone('two.thing')
+        self.enact_patch.assert_called_once_with(['qvm-clone', 'one.thing', 'two.thing'])
+        self.assertIsInstance(template_vm_clone, pyqubes.vm.TemplateVM)
+        self.assertEqual(self.template_vm.proactive, template_vm_clone.proactive)
+        self.assertEqual(self.template_vm.operating_system, template_vm_clone.operating_system)
 
 class TestVMAppVM(unittest.TestCase):
     def test_vm_app_vm(self):
