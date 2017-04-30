@@ -82,15 +82,15 @@ class TestVMVMMagicInternet(unittest.TestCase):
         self.enter_patch.assert_called_once_with()
         self.exit_patch.assert_called_once_with()
 
-class TestVMVMMagicSupervise(unittest.TestCase):
+class TestVMVMMagicAnimate(unittest.TestCase):
     def setUp(self):
         self.enter_patch = patch.object(pyqubes.vm.VM, 'start').start()
         self.exit_patch = patch.object(pyqubes.vm.VM, 'shutdown').start()
         self.addCleanup(patch.stopall)
         self.vm = pyqubes.vm.TemplateVM("magic")
 
-    def test_vm_vm_magic_supervise(self):
-        with self.vm.supervise as supervisor:
+    def test_vm_vm_magic_animate(self):
+        with self.vm.animate as supervisor:
             self.enter_patch.assert_called_once_with()
             self.exit_patch.assert_not_called()
         self.enter_patch.assert_called_once_with()

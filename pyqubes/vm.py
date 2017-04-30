@@ -24,7 +24,7 @@ class VMMagicInternet(object):
     def __exit__(self, type, value, traceback):
         self.vm.internet_offline()
 
-class VMMagicSupervise(object):
+class VMMagicAnimate(object):
     '''
     Helper class for starting and shutting down the VM automatically
     
@@ -55,7 +55,7 @@ class VM(object):
         
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
         
-        self.supervise = VMMagicSupervise(self)
+        self.animate = VMMagicAnimate(self)
         self.internet = VMMagicInternet(self)
     
     def enact(self, args):
