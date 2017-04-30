@@ -60,6 +60,10 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.vm.run('echo "foo bar"')
         self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '\'echo "foo bar"\'', '--pass-io'])
 
+    def test_vm_vm_run_no_quote(self):
+        self.vm.run('pwd', quote=False)
+        self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', 'pwd', '--pass-io'])
+
     def test_vm_vm_internet_online(self):
         self.vm.internet_online()
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--policy', 'allow'])
