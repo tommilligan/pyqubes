@@ -37,25 +37,38 @@ class TestVMVMShutdown(unittest.TestCase):
     def setUp(self):
         self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
         self.addCleanup(patch.stopall)
+        self.vm = pyqubes.vm.VM("sleepy")
 
     def test_vm_vm_shutdown(self):
-        vm = pyqubes.vm.VM("sleepy")
-        vm.shutdown()
+        self.vm.shutdown()
         self.enact_patch.assert_called_once_with(['qvm-shutdown', 'sleepy', '--wait'])
 
-class TestVMTemplateVMOnline(unittest.TestCase):
+class TestVMVMInternet(unittest.TestCase):
     def setUp(self):
-        self.enact_patch = patch.object(pyqubes.vm.TemplateVM, 'enact').start()
-        self.template_vm = pyqubes.vm.TemplateVM("networker")
+        self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
         self.addCleanup(patch.stopall)
+        self.vm = pyqubes.vm.TemplateVM("networker")
 
-    def test_vm_template_vm_online(self):
-        self.template_vm.go_online()
+    def test_vm_vm_internet_online(self):
+        self.vm.internet_online()
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'allow'])
 
-    def test_vm_template_vm_offline(self):
-        self.template_vm.go_offline()
+    def test_vm_vm_internet_offline(self):
+        self.vm.internet_offline()
         self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'deny'])
+
+class TestVMInternetConnection(unittest.TestCase):
+    def setUp(self):
+        self.online_patch = patch.object(pyqubes.vm.VM, 'internet_online').start()
+        self.offline_patch = patch.object(pyqubes.vm.VM, 'internet_offline').start()
+        self.addCleanup(patch.stopall)
+        self.vm = pyqubes.vm.TemplateVM("internetter")
+
+    def test_vm_internet_connection_magic(self):
+        with self.vm.internet as inet:
+            self.online_patch.assert_called_once_with()
+            self.offline_patch.assert_not_called()
+        self.offline_patch.assert_called_once_with()
 
 class TestVMTemplateVMUpdate(unittest.TestCase):
     def setUp(self):

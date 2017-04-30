@@ -5,11 +5,30 @@ import pyqubes.qvm
 import pyqubes.validate
 
 
+class InternetConnection(object):
+    def __init__(self, vm):
+        self.vm = vm
+
+    def __enter__(self):
+        self.vm.internet_online()
+
+    def __exit__(self, type, value, traceback):
+        self.vm.internet_offline()
+
 class VM(object):
     def __init__(self, name, proactive=False, operating_system=pyqubes.constants.FEDORA_23):
+        '''
+        The VM object represants a QubesOS VM. Its methods are common accross
+        both AppVMs and TemplateVMs.
+
+        VM should not be instanciated directly - use TemplateVM or AppVM.
+
+        By default, all VMs are Fedora 23 based. Other values are listed in ``pyqubes.constants``
+        '''
         self.name = pyqubes.validate.linux_hostname(name)
         self.operating_system = operating_system
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
+        self.internet = InternetConnection(self)
     
     def enact(self, args):
         '''
@@ -30,6 +49,26 @@ class VM(object):
     def shutdown(self, **kwargs):
         return self.enact(pyqubes.qvm.qvm_shutdown(self.name, wait=True, **kwargs))
 
+    def internet_online(self):
+        '''
+        Can be explicity called to open the VM firewall to 'allow'.
+
+        In most cases you should use``with vm.internet``::
+
+            vm = TemplateVM('foo')
+            vm.start()
+            # Templates are offline be default
+            with vm.internet as inet:
+                # Template now has unrestricted internet access
+                vm.update()
+            # Firewall is restored automatically
+        
+        '''
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
+
+    def internet_offline(self):
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
+
 # TODO: Could TemplateVM and AppVM have metaclassed magic methods?
 class TemplateVM(VM):
     def __init__(self, *args, **kwargs):
@@ -44,12 +83,6 @@ class TemplateVM(VM):
             raise ValueError("Could not update TemplateVM '{0}': Unknown OS '{1}'".format(self.name, self.operating_system))
         return self.run(update_command)
     
-    def go_online(self):
-        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
-
-    def go_offline(self):
-        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
-
 class AppVM(VM):
     def __init__(self, *args, **kwargs):
         super(AppVM, self).__init__(*args, **kwargs)
