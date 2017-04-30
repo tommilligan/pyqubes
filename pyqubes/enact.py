@@ -1,3 +1,11 @@
+#! /usr/bin/env python
+'''
+The enact module contains functions that act on a list of command-line arguments,
+
+The two most important ones are:
+* Direct execution with ``call`` (proactive mode)
+* Echoing an execution-ready script with ``echo`` (reactive mode)
+'''
 import os
 import subprocess
 import sys

@@ -67,6 +67,13 @@ class VM(object):
         '''
         return self.enact_function(args)
 
+    def info(self, info):
+        '''
+        Echo information from pyqubes about this VM
+        '''
+        info = '{0}|{1}'.format(self.name, info)
+        return self.enact(pyqubes.compile.info(info))
+
     # Direct command bindings
 
     def run(self, command, quote=True, **kwargs):
@@ -117,6 +124,7 @@ class VM(object):
             # Firewall is restored automatically
         
         '''
+        self.info('Starting')
         return self.enact(pyqubes.qvm.qvm_start(self.name, **kwargs))
 
     def firewall(self, **kwargs):
