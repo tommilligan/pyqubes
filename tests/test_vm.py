@@ -104,12 +104,12 @@ class TestVMTemplateVMUpdate(unittest.TestCase):
     def test_vm_template_vm_update_fedora(self):
         template_vm = pyqubes.vm.TemplateVM("fedora.spam")
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', '"sudo dnf check-update && sudo dnf -y upgrade"', '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', '"sudo dnf -y upgrade --refresh"', '--pass-io'])
 
     def test_vm_template_vm_update_debian(self):
         template_vm = pyqubes.vm.TemplateVM("debian.spam", operating_system=pyqubes.constants.DEBIAN_8)
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', '"sudo apt-get update && sudo apt-get -y upgrade"', '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', '"sudo apt-get update && sudo apt-get -y dist-upgrade"', '--pass-io'])
 
     def test_vm_template_vm_update_invalid(self):
         with self.assertRaises(ValueError):

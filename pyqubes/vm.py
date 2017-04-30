@@ -194,9 +194,9 @@ class TemplateVM(VM):
         Smartly runs the relevant package manager updates for the TemplateVM
         '''
         if self.operating_system in pyqubes.constants.FEDORA_ALL:
-            update_command = "sudo dnf check-update && sudo dnf -y upgrade"
+            update_command = "sudo dnf -y upgrade --refresh"
         elif self.operating_system in pyqubes.constants.DEBIAN_ALL:
-            update_command = "sudo apt-get update && sudo apt-get -y upgrade"
+            update_command = "sudo apt-get update && sudo apt-get -y dist-upgrade"
         else:
             raise ValueError("Could not update TemplateVM '{0}': Unknown OS '{1}'".format(self.name, self.operating_system))
         return self.run(update_command)
