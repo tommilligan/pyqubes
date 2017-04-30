@@ -9,7 +9,7 @@ import pyqubes.qvm
 import pyqubes.validate
 
 
-class VMMagicInternet(object):
+class VMMagicFirewall(object):
     '''
     Helper class for opening and closing the VM fireall automatically
     
@@ -19,10 +19,10 @@ class VMMagicInternet(object):
         self.vm = vm
 
     def __enter__(self):
-        self.vm.internet_online()
+        self.vm.firewall_open()
 
     def __exit__(self, type, value, traceback):
-        self.vm.internet_offline()
+        self.vm.firewall_close()
 
 class VMMagicAnimate(object):
     '''
@@ -56,7 +56,7 @@ class VM(object):
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
         
         self.animate = VMMagicAnimate(self)
-        self.internet = VMMagicInternet(self)
+        self.internet = VMMagicFirewall(self)
     
     def enact(self, args):
         '''
@@ -69,7 +69,7 @@ class VM(object):
 
     def info(self, info):
         '''
-        Echo information from pyqubes about this VM
+        Echo information from pyqubes using the VM's enact method
         '''
         info = '{0}|{1}'.format(self.name, info)
         return self.enact(pyqubes.compile.info(info))
@@ -95,6 +95,7 @@ class VM(object):
         kwargs.update({
             'pass_io': True
         })
+        self.info('Running command {0}'.format(command))
         return self.enact(pyqubes.qvm.qvm_run(self.name, command, **kwargs))
 
     def shutdown(self, **kwargs):
@@ -107,21 +108,21 @@ class VM(object):
         kwargs.update({
             'wait': True
         })
+        self.info('Shutting down')
         return self.enact(pyqubes.qvm.qvm_shutdown(self.name, **kwargs))
 
     def start(self, **kwargs):
         '''
         Start the VM explicitly.
 
-        In most cases you should use``with vm.internet``::
+        In most cases you should use``with vm.animate``::
 
             vm = TemplateVM('foo')
-            vm.start()
-            # Templates are offline be default
-            with vm.internet as inet:
-                # Template now has unrestricted internet access
+            # Template is not started on instanciation
+            with vm.animate:
+                # Template is now running
                 vm.update()
-            # Firewall is restored automatically
+            # VM is shut down automatically
         
         '''
         self.info('Starting')
@@ -131,37 +132,43 @@ class VM(object):
         '''
         Edit the VM firewall
         '''
+        self.info('Adjusting firewall')
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, **kwargs))
 
     def remove(self, **kwargs):
         '''
         Remove the VM
         '''
+        self.info('Removing')
         return self.enact(pyqubes.qvm.qvm_remove(self.name, **kwargs))
 
     # Helper functions
 
-    def internet_online(self):
+    def firewall_open(self):
         '''
         Can be explicity called to open the VM firewall to 'allow'.
 
         In most cases you should use``with vm.internet``::
 
             vm = TemplateVM('foo')
-            vm.start()
-            # Templates are offline be default
-            with vm.internet as inet:
-                # Template now has unrestricted internet access
-                vm.update()
-            # Firewall is restored automatically
+            with vm.animate:
+                # Templates are offline be default
+                with vm.internet:
+                    # Template now has unrestricted internet access
+                    vm.run('curl http://ipecho.net/plain')
+                # Firewall is restored automatically
+                # This will now fail
+                vm.run('curl http://ipecho.net/plain')
         
         '''
+        self.info('Opening firewall')
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
 
-    def internet_offline(self):
+    def firewall_close(self):
         '''
         Can be explicity called to close the VM firewall to 'deny'.
         '''
+        self.info('Closing firewall')
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
 
 # TODO: Could TemplateVM and AppVM have metaclassed magic methods?
@@ -179,6 +186,7 @@ class TemplateVM(VM):
         :param string clone_name: Name of the new VM
         :returns: The new ``TemplateVM`` instance
         '''
+        self.info('Cloning to \'{0}\''.format(clone_name))
         self.enact(pyqubes.qvm.qvm_clone(self.name, clone_name, **kwargs))
         return TemplateVM(clone_name, proactive=self.proactive, operating_system=self.operating_system)
 
@@ -196,6 +204,7 @@ class TemplateVM(VM):
             'template': self.name,
             'label': kwargs['label'] if kwargs.get('label', None) else pyqubes.constants.RED
         })
+        self.info('Creating app \'{0}\''.format(app_name))
         self.enact(pyqubes.qvm.qvm_create(app_name, **kwargs))
         return AppVM(app_name, proactive=self.proactive, operating_system=self.operating_system)
     
@@ -209,6 +218,7 @@ class TemplateVM(VM):
             update_command = "sudo apt-get update && sudo apt-get -y dist-upgrade"
         else:
             raise ValueError("Could not update TemplateVM '{0}': Unknown OS '{1}'".format(self.name, self.operating_system))
+        self.info('Updating')
         return self.run(update_command)
     
 class AppVM(VM):

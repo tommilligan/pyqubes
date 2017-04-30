@@ -8,7 +8,6 @@ import six
 
 import pyqubes.constants
 import pyqubes.enact
-import pyqubes.utils
 import pyqubes.vm
 
 class TestVmVmEnact(unittest.TestCase):
@@ -65,22 +64,22 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.vm.run('pwd', quote=False)
         self.enact_patch.assert_called_with(['qvm-run', 'bounding', 'pwd', '--pass-io'])
 
-    def test_vm_vm_internet_online(self):
-        self.vm.internet_online()
+    def test_vm_vm_firewall_open(self):
+        self.vm.firewall_open()
         self.enact_patch.assert_called_with(['qvm-firewall', 'bounding', '--policy', 'allow'])
 
-    def test_vm_vm_internet_offline(self):
-        self.vm.internet_offline()
+    def test_vm_vm_firewall_close(self):
+        self.vm.firewall_close()
         self.enact_patch.assert_called_with(['qvm-firewall', 'bounding', '--policy', 'deny'])
 
-class TestVMVMMagicInternet(unittest.TestCase):
+class TestVMVMMagicFirewall(unittest.TestCase):
     def setUp(self):
-        self.enter_patch = patch.object(pyqubes.vm.VM, 'internet_online').start()
-        self.exit_patch = patch.object(pyqubes.vm.VM, 'internet_offline').start()
+        self.enter_patch = patch.object(pyqubes.vm.VM, 'firewall_open').start()
+        self.exit_patch = patch.object(pyqubes.vm.VM, 'firewall_close').start()
         self.addCleanup(patch.stopall)
         self.vm = pyqubes.vm.TemplateVM("magic")
 
-    def test_vm_vm_magic_internet(self):
+    def test_vm_vm_magic_firewall(self):
         with self.vm.internet as inet:
             self.enter_patch.assert_called_with()
             self.exit_patch.assert_not_called()
@@ -136,20 +135,14 @@ class TestVMTemplateVMBoundFunctions(unittest.TestCase):
 
     def test_vm_template_vm_create_app(self):
         returned_vm = self.template_vm.create_app('app.thing')
-        pyqubes.utils.assert_list_items_equal_in_nested(
-                [call_args[0] if len(call_args) else [] for call_args in self.enact_patch.call_args],
-                ['qvm-create', 'app.thing', '--template', 'one.thing', '--label', 'red']
-        )
+        six.assertCountEqual(self, self.enact_patch.call_args[0][0], ['qvm-create', 'app.thing', '--template', 'one.thing', '--label', 'red'])
         self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
         self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
         self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
 
     def test_vm_template_vm_create_app_flags(self):
         returned_vm = self.template_vm.create_app('app.thing', label='green', standalone=True)
-        pyqubes.utils.assert_list_items_equal_in_nested(
-                [call_args[0] if len(call_args) else [] for call_args in self.enact_patch.call_args],
-                ['qvm-create', 'app.thing', '--standalone', '--template', 'one.thing', '--label', 'green']
-        )
+        six.assertCountEqual(self, self.enact_patch.call_args[0][0], ['qvm-create', 'app.thing', '--standalone', '--template', 'one.thing', '--label', 'green'])
         self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
         self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
         self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
