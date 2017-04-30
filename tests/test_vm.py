@@ -122,11 +122,25 @@ class TestVMTemplateVMBoundFunctions(unittest.TestCase):
         self.template_vm = pyqubes.vm.TemplateVM("one.thing", proactive=True, operating_system='arbitrary-value')
 
     def test_vm_template_vm_clone(self):
-        template_vm_clone = self.template_vm.clone('two.thing')
+        returned_vm = self.template_vm.clone('two.thing')
         self.enact_patch.assert_called_once_with(['qvm-clone', 'one.thing', 'two.thing'])
-        self.assertIsInstance(template_vm_clone, pyqubes.vm.TemplateVM)
-        self.assertEqual(self.template_vm.proactive, template_vm_clone.proactive)
-        self.assertEqual(self.template_vm.operating_system, template_vm_clone.operating_system)
+        self.assertIsInstance(returned_vm, pyqubes.vm.TemplateVM)
+        self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
+        self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
+
+    def test_vm_template_vm_create_app(self):
+        returned_vm = self.template_vm.create_app('app.thing')
+        self.enact_patch.assert_called_once_with(['qvm-create', 'app.thing', '--template', 'one.thing', '--label', 'red'])
+        self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
+        self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
+        self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
+
+    def test_vm_template_vm_create_app_flags(self):
+        returned_vm = self.template_vm.create_app('app.thing', label='green', standalone=True)
+        self.enact_patch.assert_called_once_with(['qvm-create', 'app.thing', '--standalone', '--template', 'one.thing', '--label', 'green'])
+        self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
+        self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
+        self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
 
 class TestVMAppVM(unittest.TestCase):
     def test_vm_app_vm(self):

@@ -86,6 +86,22 @@ class TestQvmClone(unittest.TestCase):
     def test_qvm_clone_path(self):
         pass
 
+class TestQvmCreate(unittest.TestCase):
+    def test_qvm_create_simple(self):
+        command_args = pyqubes.qvm.qvm_create("pear")
+        self.assertEqual(command_args, ["qvm-create", "pear"])
+    
+    def test_qvm_create_explicit(self):
+        command_args = pyqubes.qvm.qvm_create("pear", template='fruit', label='green')
+        self.assertEqual(command_args, ["qvm-create", "pear", "--template", "fruit", "--label", "green"])
+    
+    def test_qvm_create_invalid(self):
+        with self.assertRaises(ValueError):
+            command_args = pyqubes.qvm.qvm_create("pear", label='spam')
+    
+    def test_qvm_create_root_path(self):
+        pass
+
 class TestQvmRemove(unittest.TestCase):
     def test_qvm_remove_simple(self):
         command_args = pyqubes.qvm.qvm_remove("pear")

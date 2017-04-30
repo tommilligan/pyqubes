@@ -127,6 +127,45 @@ def qvm_clone(vm_name,
     }))
     return command_args
 
+def qvm_create(vm_name,
+            template='',
+            label='',
+            proxy=False,
+            net=False,
+            hvm=False,
+            hvm_template=False,
+            root_move_from='',
+            root_copy_from='',
+            standalone=False,
+            mem=0,
+            vcpus=0,
+            internal=False,
+            force_root=False,
+            quiet=False):
+    '''
+    qvm-create
+    '''
+    command_args = ["qvm-create", pyqubes.validate.linux_hostname(vm_name)]
+    command_args.extend(pyqubes.compile.flags_boolean({
+        '--proxy': proxy,
+        '--net': net,
+        '--hvm': hvm,
+        '--hvm_template': hvm_template,
+        '--standalone': standalone,
+        '--internal': internal,
+        '--force-root': force_root,
+        '--quiet': quiet
+    }))
+    command_args.extend(pyqubes.compile.flags_store({
+        '--template': pyqubes.validate.linux_hostname(template) if template else None,
+        '--label': pyqubes.validate.label_color(label) if label else None,
+        '--root-move-from': root_move_from,
+        '--root-copy-from': root_copy_from,
+        '--mem': mem,
+        '--vcpus': vcpus
+    }))
+    return command_args
+
 def qvm_remove(vm_name,
             quiet=False,
             just_db=False,

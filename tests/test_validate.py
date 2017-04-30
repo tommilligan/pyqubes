@@ -3,6 +3,7 @@
 import unittest
 
 import pyqubes.validate
+import pyqubes.constants
 
 
 class TestvalidateLinuxUsername(unittest.TestCase):
@@ -42,6 +43,11 @@ class TestvalidateLinuxHostname(unittest.TestCase):
         valid_input_string = pyqubes.validate.linux_hostname(input_string)
         self.assertEqual(valid_input_string, input_string)
 
+    def test_validate_linux_hostname_valid_constant(self):
+        input_string = pyqubes.constants.FEDORA_23
+        valid_input_string = pyqubes.validate.linux_hostname(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
     def test_validate_linux_hostname_valid_complex(self):
         input_string = "edge.had-oop.1234-"
         valid_input_string = pyqubes.validate.linux_hostname(input_string)
@@ -73,13 +79,13 @@ class TestvalidateLinuxHostname(unittest.TestCase):
             valid_input_string = pyqubes.validate.linux_hostname(input_string)
 
 class TestvalidateFirewallPolicy(unittest.TestCase):
-    def test_validate_firewall_policy_valid_allow(self):
+    def test_validate_firewall_policy_valid(self):
         input_string = "allow"
         valid_input_string = pyqubes.validate.firewall_policy(input_string)
         self.assertEqual(valid_input_string, input_string)
 
-    def test_validate_firewall_policy_valid_deny(self):
-        input_string = "deny"
+    def test_validate_firewall_policy_valid_constant(self):
+        input_string = pyqubes.constants.DENY
         valid_input_string = pyqubes.validate.firewall_policy(input_string)
         self.assertEqual(valid_input_string, input_string)
 
@@ -92,4 +98,25 @@ class TestvalidateFirewallPolicy(unittest.TestCase):
         input_string = ""
         with self.assertRaises(ValueError):
             valid_input_string = pyqubes.validate.firewall_policy(input_string)
+
+class TestvalidateLabelColor(unittest.TestCase):
+    def test_validate_label_color_valid(self):
+        input_string = "orange"
+        valid_input_string = pyqubes.validate.label_color(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
+    def test_validate_label_color_valid_constant(self):
+        input_string = pyqubes.constants.GRAY
+        valid_input_string = pyqubes.validate.label_color(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
+    def test_validate_label_color_invalid_string(self):
+        input_string = "fooxbar"
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.label_color(input_string)
+
+    def test_validate_label_color_invalid_length_zero(self):
+        input_string = ""
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.label_color(input_string)
 

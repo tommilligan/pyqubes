@@ -8,6 +8,9 @@ Otherwise, ``ValueError`` will be raised
 
 import re
 
+import pyqubes.constants
+
+
 # TODO replace with config (regex, lambda, error message)
 def linux_username(username):
     '''
@@ -46,8 +49,28 @@ def firewall_policy(policy):
     :param string policy: Policy string to check
     :returns: ``policy`` if valid, else ``ValueError``
     '''
-    if policy not in ["allow", "deny"]:
+    if policy not in pyqubes.constants.FIREWALL_POLICY_ALL:
         raise ValueError('Invalid qvm-firewall policy: {0}'.format(policy))
     else:
         return policy
+
+def label_color(color):
+    '''
+    VM label color should be one of:
+    * red
+    * orange
+    * yellow
+    * green
+    * blue
+    * purple
+    * black
+    * gray
+
+    :param string color: Label color string to check
+    :returns: ``color`` if valid, else ``ValueError``
+    '''
+    if color not in pyqubes.constants.LABEL_COLOR_ALL:
+        raise ValueError('Invalid label color: {0}'.format(color))
+    else:
+        return color
 

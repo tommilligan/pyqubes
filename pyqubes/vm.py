@@ -73,11 +73,13 @@ class VM(object):
         '''
         Run a command on the VM.
 
-        Commands are automatically encapsulated in double quotes::
+        Please note:
+        * ``--pass-io`` is always set, to run commands synchronously
+        * Commands are automatically encapsulated in double quotes::
 
             vm = TemplateVM('spam')
             vm.run("echo 'foo bar'")
-            # qvm-run spam "echo 'foo bar'
+            # qvm-run spam "echo 'foo bar'"
         
         '''
         command = "\"{0}\"".format(command)
@@ -88,9 +90,15 @@ class VM(object):
 
     def shutdown(self, **kwargs):
         '''
-        Shutdown the VM
+        Shutdown the 
+        
+        Please note:
+        * ``--wait`` is always set, to run commands synchronously
         '''
-        return self.enact(pyqubes.qvm.qvm_shutdown(self.name, wait=True, **kwargs))
+        kwargs.update({
+            'wait': True
+        })
+        return self.enact(pyqubes.qvm.qvm_shutdown(self.name, **kwargs))
 
     def start(self, **kwargs):
         '''
@@ -156,7 +164,7 @@ class TemplateVM(VM):
 
     def clone(self, clone_name, **kwargs):
         '''
-        Clone the VM
+        Clone the TemplateVM and return a new TemplateVM
 
         :param string clone_name: Name of the new VM
         :returns: The new ``TemplateVM`` instance
@@ -164,6 +172,23 @@ class TemplateVM(VM):
         self.enact(pyqubes.qvm.qvm_clone(self.name, clone_name, **kwargs))
         return TemplateVM(clone_name, proactive=self.proactive, operating_system=self.operating_system)
 
+    def create_app(self, app_name, **kwargs):
+        '''
+        Create and return a new AppVM based on the TemplateVM.
+        
+        Please note:
+        * If ``label`` is not set, it will default to ``red``
+
+        :param string app_name: Name of the new VM
+        :returns: The new ``AppVM`` instance
+        '''
+        kwargs.update({
+            'template': self.name,
+            'label': kwargs['label'] if kwargs.get('label', None) else pyqubes.constants.RED
+        })
+        self.enact(pyqubes.qvm.qvm_create(app_name, **kwargs))
+        return AppVM(app_name, proactive=self.proactive, operating_system=self.operating_system)
+    
     def update(self):
         '''
         Smartly runs the relevant package manager updates for the TemplateVM
