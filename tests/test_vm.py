@@ -57,8 +57,8 @@ class TestVMVMBoundFunctions(unittest.TestCase):
         self.enact_patch.assert_called_once_with(['qvm-remove', 'bounding'])
 
     def test_vm_vm_run(self):
-        self.vm.run("echo 'foo bar'")
-        self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '"echo \'foo bar\'"', '--pass-io'])
+        self.vm.run('echo "foo bar"')
+        self.enact_patch.assert_called_once_with(['qvm-run', 'bounding', '\'echo "foo bar"\'', '--pass-io'])
 
     def test_vm_vm_internet_online(self):
         self.vm.internet_online()
@@ -104,12 +104,12 @@ class TestVMTemplateVMUpdate(unittest.TestCase):
     def test_vm_template_vm_update_fedora(self):
         template_vm = pyqubes.vm.TemplateVM("fedora.spam")
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', '"sudo dnf -y upgrade --refresh"', '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'fedora.spam', "'sudo dnf -y upgrade --refresh'", '--pass-io'])
 
     def test_vm_template_vm_update_debian(self):
         template_vm = pyqubes.vm.TemplateVM("debian.spam", operating_system=pyqubes.constants.DEBIAN_8)
         template_vm.update()
-        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', '"sudo apt-get update && sudo apt-get -y dist-upgrade"', '--pass-io'])
+        self.enact_patch.assert_called_once_with(['qvm-run', 'debian.spam', "'sudo apt-get update && sudo apt-get -y dist-upgrade'", '--pass-io'])
 
     def test_vm_template_vm_update_invalid(self):
         with self.assertRaises(ValueError):

@@ -69,20 +69,22 @@ class VM(object):
 
     # Direct command bindings
 
-    def run(self, command, **kwargs):
+    def run(self, command, quote=True, **kwargs):
         '''
         Run a command on the VM.
 
         Please note:
         * ``--pass-io`` is always set, to run commands synchronously
-        * Commands are automatically encapsulated in double quotes::
+        * Commands are automatically encapsulated in single quotes::
 
             vm = TemplateVM('spam')
-            vm.run("echo 'foo bar'")
-            # qvm-run spam "echo 'foo bar'"
+            vm.run('echo "foo bar"')
+            # produces: qvm-run spam 'echo "foo bar"'
         
+        :param bool quote: By default command is single quoted - set ``False`` to disable
         '''
-        command = "\"{0}\"".format(command)
+        if quote:
+            command = "'{0}'".format(command)
         kwargs.update({
             'pass_io': True
         })
