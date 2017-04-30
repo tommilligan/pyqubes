@@ -2,6 +2,6 @@
 Pythonic Classes
 ================
 
-.. automodule:: pyqubes
+.. automodule:: pyqubes.vm
    :members:
 
