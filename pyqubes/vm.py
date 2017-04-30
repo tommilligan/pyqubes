@@ -43,7 +43,12 @@ class TemplateVM(VM):
         else:
             raise ValueError("Could not update TemplateVM '{0}': Unknown OS '{1}'".format(self.name, self.operating_system))
         return self.run(update_command)
+    
+    def go_online(self):
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
 
+    def go_offline(self):
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
 
 class AppVM(VM):
     def __init__(self, *args, **kwargs):

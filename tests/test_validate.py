@@ -72,3 +72,24 @@ class TestvalidateLinuxHostname(unittest.TestCase):
         with self.assertRaises(ValueError):
             valid_input_string = pyqubes.validate.linux_hostname(input_string)
 
+class TestvalidateFirewallPolicy(unittest.TestCase):
+    def test_validate_firewall_policy_valid_allow(self):
+        input_string = "allow"
+        valid_input_string = pyqubes.validate.firewall_policy(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
+    def test_validate_firewall_policy_valid_deny(self):
+        input_string = "deny"
+        valid_input_string = pyqubes.validate.firewall_policy(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
+    def test_validate_firewall_policy_invalid_string(self):
+        input_string = "fooxbar"
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.firewall_policy(input_string)
+
+    def test_validate_firewall_policy_invalid_length_zero(self):
+        input_string = ""
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.firewall_policy(input_string)
+

@@ -20,7 +20,7 @@ def qvm_run(vm_name,
     '''
     qvm-run
     '''
-    command_args = ["qvm-run", vm_name, command]
+    command_args = ["qvm-run", pyqubes.validate.linux_hostname(vm_name), command]
     command_args.extend(pyqubes.compile.flags_boolean({
         '--quiet': quiet,
         '--auto': auto,
@@ -51,7 +51,7 @@ def qvm_shutdown(vm_name,
     '''
     qvm-shutdown
     '''
-    command_args = ["qvm-shutdown", pyqubes.validate.linux_username(vm_name)]
+    command_args = ["qvm-shutdown", pyqubes.validate.linux_hostname(vm_name)]
     command_args.extend(pyqubes.compile.flags_boolean({
         '--quiet': quiet,
         '--force': force,
@@ -62,3 +62,31 @@ def qvm_shutdown(vm_name,
         '--exclude': pyqubes.validate.linux_hostname(exclude_single) if exclude_single else None
     })) for exclude_single in exclude]
     return command_args
+
+def qvm_firewall(vm_name,
+            list_view=False,
+            add_rule='',
+            del_rule='',
+            set_policy='',
+            set_icmp='',
+            set_dns='',
+            set_yum_proxy='',
+            numeric=False):
+    '''
+    qvm-firewall
+    '''
+    command_args = ["qvm-firewall", pyqubes.validate.linux_hostname(vm_name)]
+    command_args.extend(pyqubes.compile.flags_boolean({
+        '--list': list_view,
+        '--numeric': numeric
+    }))
+    command_args.extend(pyqubes.compile.flags_store({
+        '--add': add_rule,
+        '--del': del_rule,
+        '--policy': pyqubes.validate.firewall_policy(set_policy) if set_policy else None,
+        '--icmp': pyqubes.validate.firewall_policy(set_icmp) if set_icmp else None,
+        '--dns': pyqubes.validate.firewall_policy(set_dns) if set_dns else None,
+        '--yum_proxy': pyqubes.validate.firewall_policy(set_yum_proxy) if set_yum_proxy else None
+    }))
+    return command_args
+

@@ -43,6 +43,20 @@ class TestVMVMShutdown(unittest.TestCase):
         vm.shutdown()
         self.enact_patch.assert_called_once_with(['qvm-shutdown', 'sleepy', '--wait'])
 
+class TestVMTemplateVMOnline(unittest.TestCase):
+    def setUp(self):
+        self.enact_patch = patch.object(pyqubes.vm.TemplateVM, 'enact').start()
+        self.template_vm = pyqubes.vm.TemplateVM("networker")
+        self.addCleanup(patch.stopall)
+
+    def test_vm_template_vm_online(self):
+        self.template_vm.go_online()
+        self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'allow'])
+
+    def test_vm_template_vm_offline(self):
+        self.template_vm.go_offline()
+        self.enact_patch.assert_called_once_with(['qvm-firewall', 'networker', '--policy', 'deny'])
+
 class TestVMTemplateVMUpdate(unittest.TestCase):
     def setUp(self):
         self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
