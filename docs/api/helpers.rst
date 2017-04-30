@@ -1,30 +1,38 @@
 
-pyqubes utilities
-=================
+Utilities
+=========
 
-Compiling
----------
+Compile
+-------
 
 .. automodule:: pyqubes.compile
    :members:
 
 
-Validation
-----------
+Constants
+---------
 
-.. automodule:: pyqubes.validate
+.. automodule:: pyqubes.constants
    :members:
 
 
-Action
-------
+Enact
+-----
 
 .. automodule:: pyqubes.enact
    :members:
 
 
-General
--------
+Utils
+-----
 
 .. automodule:: pyqubes.utils
    :members:
+
+
+Validate
+--------
+
+.. automodule:: pyqubes.validate
+   :members:
+

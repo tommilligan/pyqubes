@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+'''
+Python objects representing QubesOS objects
+'''
 
 import pyqubes.constants
 import pyqubes.enact
@@ -6,6 +10,11 @@ import pyqubes.validate
 
 
 class InternetConnection(object):
+    '''
+    Helper class for opening and closing the VM fireall automatically.abs
+    
+    :param vm: A ``VM`` instance.
+    '''
     def __init__(self, vm):
         self.vm = vm
 
@@ -16,15 +25,15 @@ class InternetConnection(object):
         self.vm.internet_offline()
 
 class VM(object):
+    '''
+    The VM object represants a QubesOS VM. Its methods are common accross
+    both AppVMs and TemplateVMs.
+
+    VM should not be instanciated directly - use TemplateVM or AppVM.
+
+    By default, all VMs are Fedora 23 based. Other values are listed in ``pyqubes.constants``
+    '''
     def __init__(self, name, proactive=False, operating_system=pyqubes.constants.FEDORA_23):
-        '''
-        The VM object represants a QubesOS VM. Its methods are common accross
-        both AppVMs and TemplateVMs.
-
-        VM should not be instanciated directly - use TemplateVM or AppVM.
-
-        By default, all VMs are Fedora 23 based. Other values are listed in ``pyqubes.constants``
-        '''
         self.name = pyqubes.validate.linux_hostname(name)
         self.operating_system = operating_system
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
@@ -40,6 +49,9 @@ class VM(object):
         return self.enact_function(args)
 
     def run(self, command, **kwargs):
+        '''
+        Run a command on the VM
+        '''
         command = "'{0}'".format(command)
         kwargs.update({
             'pass_io': True
@@ -89,6 +101,9 @@ class VM(object):
 
 # TODO: Could TemplateVM and AppVM have metaclassed magic methods?
 class TemplateVM(VM):
+    '''
+    TemplateVM - for installing apps
+    '''
     def __init__(self, *args, **kwargs):
         super(TemplateVM, self).__init__(*args, **kwargs)
 
@@ -105,6 +120,9 @@ class TemplateVM(VM):
         return self.run(update_command)
     
 class AppVM(VM):
+    '''
+    AppVM - for running apps
+    '''
     def __init__(self, *args, **kwargs):
         super(AppVM, self).__init__(*args, **kwargs)
 

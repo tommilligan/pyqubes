@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+'''
+Validate functions for pyqubes
+
+These will return the original value if validation passes.
+Otherwise, ``ValueError`` will be raised
+'''
+
 import re
 
 # TODO replace with config (regex, lambda, error message)
