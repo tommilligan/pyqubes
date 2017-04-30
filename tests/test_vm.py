@@ -4,6 +4,7 @@ import unittest
 import sys
 
 from mock import patch
+import six
 
 import pyqubes.constants
 import pyqubes.enact
@@ -130,14 +131,14 @@ class TestVMTemplateVMBoundFunctions(unittest.TestCase):
 
     def test_vm_template_vm_create_app(self):
         returned_vm = self.template_vm.create_app('app.thing')
-        self.enact_patch.assert_called_once_with(['qvm-create', 'app.thing', '--template', 'one.thing', '--label', 'red'])
+        six.assertCountEqual(self, self.enact_patch.call_args[0][0], ['qvm-create', 'app.thing', '--template', 'one.thing', '--label', 'red'])
         self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
         self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
         self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)
 
     def test_vm_template_vm_create_app_flags(self):
         returned_vm = self.template_vm.create_app('app.thing', label='green', standalone=True)
-        self.enact_patch.assert_called_once_with(['qvm-create', 'app.thing', '--standalone', '--template', 'one.thing', '--label', 'green'])
+        six.assertCountEqual(self, self.enact_patch.call_args[0][0], ['qvm-create', 'app.thing', '--standalone', '--template', 'one.thing', '--label', 'green'])
         self.assertIsInstance(returned_vm, pyqubes.vm.AppVM)
         self.assertEqual(self.template_vm.proactive, returned_vm.proactive)
         self.assertEqual(self.template_vm.operating_system, returned_vm.operating_system)

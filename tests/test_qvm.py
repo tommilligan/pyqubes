@@ -2,6 +2,8 @@
 
 import unittest
 
+import six
+
 import pyqubes.qvm
 
 
@@ -93,7 +95,7 @@ class TestQvmCreate(unittest.TestCase):
     
     def test_qvm_create_explicit(self):
         command_args = pyqubes.qvm.qvm_create("pear", template='fruit', label='green')
-        self.assertEqual(command_args, ["qvm-create", "pear", "--template", "fruit", "--label", "green"])
+        six.assertCountEqual(self, command_args, ["qvm-create", "pear", "--template", "fruit", "--label", "green"])
     
     def test_qvm_create_invalid(self):
         with self.assertRaises(ValueError):
