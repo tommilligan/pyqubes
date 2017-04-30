@@ -47,7 +47,22 @@ class VM(object):
         return self.enact(pyqubes.qvm.qvm_run(self.name, command, **kwargs))
 
     def shutdown(self, **kwargs):
+        '''
+        Shutdown the VM
+        '''
         return self.enact(pyqubes.qvm.qvm_shutdown(self.name, wait=True, **kwargs))
+
+    def start(self, **kwargs):
+        '''
+        Start the VM
+        '''
+        return self.enact(pyqubes.qvm.qvm_start(self.name, **kwargs))
+
+    def firewall(self, **kwargs):
+        '''
+        Edit the VM firewall
+        '''
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, **kwargs))
 
     def internet_online(self):
         '''
@@ -67,6 +82,9 @@ class VM(object):
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
 
     def internet_offline(self):
+        '''
+        Can be explicity called to close the VM firewall to 'deny'.
+        '''
         return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
 
 # TODO: Could TemplateVM and AppVM have metaclassed magic methods?
@@ -75,6 +93,9 @@ class TemplateVM(VM):
         super(TemplateVM, self).__init__(*args, **kwargs)
 
     def update(self):
+        '''
+        Smartly runs the relevant package manager updates for the TemplateVM
+        '''
         if self.operating_system in pyqubes.constants.FEDORA_ALL:
             update_command = "sudo dnf check-update && sudo dnf -y upgrade"
         elif self.operating_system in pyqubes.constants.DEBIAN_ALL:

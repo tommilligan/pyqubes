@@ -90,3 +90,24 @@ def qvm_firewall(vm_name,
     }))
     return command_args
 
+def qvm_start(vm_name,
+            quiet=False,
+            no_guid=False,
+            console=False,
+            dvm=False,
+            custom_config=''):
+    '''
+    qvm-start
+    '''
+    command_args = ["qvm-start", pyqubes.validate.linux_hostname(vm_name)]
+    command_args.extend(pyqubes.compile.flags_boolean({
+        '--quiet': quiet,
+        '--no-guid': no_guid,
+        '--console': console,
+        '--dvm': dvm
+    }))
+    command_args.extend(pyqubes.compile.flags_store({
+        '--custom-config': custom_config
+    }))
+    return command_args
+

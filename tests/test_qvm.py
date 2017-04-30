@@ -61,5 +61,16 @@ class TestQvmShutdown(unittest.TestCase):
     def test_qvm_shutdown_exclude(self):
         command_args = pyqubes.qvm.qvm_shutdown("pear", exclude=["penguin", "rabbit"])
         self.assertEqual(command_args, ["qvm-shutdown", "pear", "--exclude", "penguin", "--exclude", "rabbit"])
+
+class TestQvmStart(unittest.TestCase):
+    def test_qvm_start_simple(self):
+        command_args = pyqubes.qvm.qvm_start("pear")
+        self.assertEqual(command_args, ["qvm-start", "pear"])
     
+    def test_qvm_start_flags(self):
+        command_args = pyqubes.qvm.qvm_start("pear", quiet=True)
+        self.assertEqual(command_args, ["qvm-start", "pear", "--quiet"])
+    
+    def test_qvm_start_config(self):
+        pass
 

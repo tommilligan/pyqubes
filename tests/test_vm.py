@@ -33,15 +33,23 @@ class TestVmVmEnact(unittest.TestCase):
         self.call_patch.assert_called_once_with(["foo", "bar"])
         self.echo_patch.assert_not_called()
 
-class TestVMVMShutdown(unittest.TestCase):
+class TestVMVMBoundFunctions(unittest.TestCase):
     def setUp(self):
         self.enact_patch = patch.object(pyqubes.vm.VM, 'enact').start()
         self.addCleanup(patch.stopall)
-        self.vm = pyqubes.vm.VM("sleepy")
+        self.vm = pyqubes.vm.VM("bounding")
 
     def test_vm_vm_shutdown(self):
         self.vm.shutdown()
-        self.enact_patch.assert_called_once_with(['qvm-shutdown', 'sleepy', '--wait'])
+        self.enact_patch.assert_called_once_with(['qvm-shutdown', 'bounding', '--wait'])
+
+    def test_vm_vm_start(self):
+        self.vm.start()
+        self.enact_patch.assert_called_once_with(['qvm-start', 'bounding'])
+
+    def test_vm_vm_firewall(self):
+        self.vm.firewall(list_view=True)
+        self.enact_patch.assert_called_once_with(['qvm-firewall', 'bounding', '--list'])
 
 class TestVMVMInternet(unittest.TestCase):
     def setUp(self):
