@@ -22,6 +22,13 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: Apache Software License',
+        'Operating System :: POSIX :: Linux',
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Intended Audience :: End Users/Desktop',
+        'Natural Language :: English',
+        'Topic :: Desktop Environment',
+        'Topic :: System :: Installation/Setup'
     ],
     zip_safe=False,
     platforms='any',

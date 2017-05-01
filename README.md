@@ -79,6 +79,16 @@ Output will be color-coded as:
 |red|TemplateVM/AppVM|
 |blue|pyqubes|
 
+### As a wrapper
+
+**pyqubes** can also be used a simple wrapper library, although it's not reccommended:
+```python
+import subprocess
+from pyqubes.qvm import qvm_start
+subprocess.call(qvm_start('fedora-23', quiet=True))
+```
+
+
 ## Documentation
 
 The full documentation is available [here on readthedocs](http://pyqubes.readthedocs.io/en/master/)
