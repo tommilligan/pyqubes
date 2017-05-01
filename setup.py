@@ -9,8 +9,8 @@ setup(
     url='https://github.com/tommilligan/pyqubes/',
     author='Tom Milligan',
     author_email='code@tommilligan.net',
-    description="Backend for synaptic-scout; request data from Neo4j, perform searches in Elastic, and pump data between the two.",
-    keywords='neo neo4j elastic elasticsearch graph iterative',
+    description="QubesOS dom0 automation in Python",
+    keywords='qubes qubesos QubesOS wrapper recipe dom0 vm templatevm appvm',
     packages=find_packages(exclude=['tests']),
     classifiers=[
         'Programming Language :: Python :: 2',
@@ -51,7 +51,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'pyqubes = isoprene_pumpjack.api:main'
         ]
     },
 )
