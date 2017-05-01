@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyqubes',
-    version='0.0.1',
+    version='0.0.3',
     license='Apache License 2.0',
     url='https://github.com/tommilligan/pyqubes/',
     author='Tom Milligan',
