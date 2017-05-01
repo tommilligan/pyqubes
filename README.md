@@ -11,7 +11,7 @@
 
 **pyqubes** aims to make the automation of dom0 tasks in QubesOS easier to document and share. Nothing additional needs to be installed in dom0 - pyqubes generates plain bash scripts dom0 can understand, with the heavy lifting done on an AppVM.
 
-```
+```python
 from pyqubes.vm import TemplateVM
 vm = TemplateVM('fedora-23')
 with vm.animate:
@@ -20,7 +20,7 @@ with vm.animate:
         vm.run('curl http://ipecho.net/plain')
 ```
 generates the equialent bash script
-```
+```bash
 qvm-start fedora-23
 qvm-run fedora-23 'sudo dnf -y upgrade --refresh' --pass-io
 qvm-firewall fedora-23 --policy allow
@@ -32,7 +32,7 @@ qvm-shutdown fedora-23 --wait
 ## Installation
 
 Install on an AppVM using pip:
-```
+```bash
 pip install pyqubes
 ```
 
@@ -43,7 +43,7 @@ pip install pyqubes
 There are a few example python scripts available to download.
 
 Running a python script transcribes a matching bash script to `stdout`.
-```
+```bash
 python pyqubes_script.py > qubes_script.sh
 ```
 
@@ -63,11 +63,11 @@ If you're still interested, read on...
 
 --------------------
 Bash scripts from an AppVM can be run from `dom0` using the following:
-```
+```bash
 bash <(qvm-run --pass-io <AppVM_name> 'cat ~/path/to/bash/script.sh')
 ```
 or, to run the python script directly:
-```
+```bash
 bash <(qvm-run --pass-io <AppVM_name> 'python ~/path/to/python/script.py')
 ```
 
