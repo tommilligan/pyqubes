@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 '''
-Use pyqubes to clone a new TemplateVM and install Google Chrome
+Show standard cURL behaviour from an AppVM and a TemplateVM (with/without firewall)
 '''
 from pyqubes.vm import TemplateVM
 
