@@ -71,6 +71,7 @@ class VM(object):
         '''
         Echo information from pyqubes using the VM's enact method
         '''
+        info = info.replace("'", "")
         info = '{0}|{1}'.format(self.name, info)
         return self.enact(pyqubes.compile.info(info))
 
