@@ -93,3 +93,19 @@ subprocess.call(qvm_start('fedora-23', quiet=True))
 
 The full documentation is available [here on readthedocs](http://pyqubes.readthedocs.io/en/master/)
 
+## Development
+
+Pull Requests and issues are always welcome.
+
+Clone the repo and install with development requirements using pip:
+```bash
+git clone https://github.com/tommilligan/pyqubes
+cd pyqubes
+pip install .[dev]
+```
+
+Please ensure you add matching tests for your commits!
+```bash
+nose2 --with-coverage
+```
+
