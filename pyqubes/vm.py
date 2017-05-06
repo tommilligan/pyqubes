@@ -54,10 +54,7 @@ class VM(object):
         self.operating_system = operating_system
         
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
-        
-        self.animate = VMMagicAnimate(self)
-        self.internet = VMMagicFirewall(self)
-    
+            
     def enact(self, args):
         '''
         Enact a list of command arguments using the VM's ``enact_function``
@@ -116,18 +113,24 @@ class VM(object):
         '''
         Start the VM explicitly.
 
-        In most cases you should use``with vm.animate``::
+        In most cases you should use``with vm.animate()``.        
+        '''
+        self.info('Starting')
+        return self.enact(pyqubes.qvm.qvm_start(self.name, **kwargs))
+
+    def animate(self):
+        '''
+        Magically start and stop the VM::
 
             vm = TemplateVM('foo')
             # Template is not started on instanciation
-            with vm.animate:
+            with vm.animate():
                 # Template is now running
                 vm.update()
             # VM is shut down automatically
         
         '''
-        self.info('Starting')
-        return self.enact(pyqubes.qvm.qvm_start(self.name, **kwargs))
+        return VMMagicAnimate(self)
 
     def firewall(self, **kwargs):
         '''
@@ -149,7 +152,21 @@ class VM(object):
         '''
         Can be explicity called to open the VM firewall to 'allow'.
 
-        In most cases you should use``with vm.internet``::
+        In most cases you should use``with vm.internet``.
+        '''
+        self.info('Opening firewall')
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
+
+    def firewall_close(self):
+        '''
+        Can be explicity called to close the VM firewall to 'deny'.
+        '''
+        self.info('Closing firewall')
+        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
+
+    def internet(self):
+        '''
+        Magically open and close the VM firewall::
 
             vm = TemplateVM('foo')
             with vm.animate:
@@ -162,15 +179,7 @@ class VM(object):
                 vm.run('curl http://ipecho.net/plain')
         
         '''
-        self.info('Opening firewall')
-        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='allow'))
-
-    def firewall_close(self):
-        '''
-        Can be explicity called to close the VM firewall to 'deny'.
-        '''
-        self.info('Closing firewall')
-        return self.enact(pyqubes.qvm.qvm_firewall(self.name, set_policy='deny'))
+        return VMMagicFirewall(self)
 
 # TODO: Could TemplateVM and AppVM have metaclassed magic methods?
 class TemplateVM(VM):

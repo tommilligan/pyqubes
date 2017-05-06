@@ -88,7 +88,7 @@ class TestVMVMMagicFirewall(unittest.TestCase):
         self.vm = pyqubes.vm.TemplateVM("magic")
 
     def test_vm_vm_magic_firewall(self):
-        with self.vm.internet as inet:
+        with self.vm.internet() as inet:
             self.enter_patch.assert_called_with()
             self.exit_patch.assert_not_called()
         self.enter_patch.assert_called_with()
@@ -102,7 +102,7 @@ class TestVMVMMagicAnimate(unittest.TestCase):
         self.vm = pyqubes.vm.TemplateVM("magic")
 
     def test_vm_vm_magic_animate(self):
-        with self.vm.animate as supervisor:
+        with self.vm.animate() as supervisor:
             self.enter_patch.assert_called_with()
             self.exit_patch.assert_not_called()
         self.enter_patch.assert_called_with()
