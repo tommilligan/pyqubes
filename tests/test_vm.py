@@ -74,11 +74,7 @@ class TestVMVMBoundFunctions(unittest.TestCase):
 
     def test_vm_vm_info(self):
         self.vm.info('entropy')
-        self.enact_patch.assert_called_with(['echo', '-e', "'\\e[36mpyqubes|bounding|entropy\\e[39m'"])
-
-    def test_vm_vm_info_quotes(self):
-        self.vm.info('entropy now at \'68%\'')
-        self.enact_patch.assert_called_with(['echo', '-e', "'\\e[36mpyqubes|bounding|entropy now at 68%\\e[39m'"])
+        self.enact_patch.assert_called_with(['echo', '-e', "$'\\e[36mpyqubes|bounding|entropy\\e[39m'"])
 
 class TestVMVMMagicFirewall(unittest.TestCase):
     def setUp(self):

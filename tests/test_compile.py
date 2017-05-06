@@ -102,7 +102,11 @@ class TestCompileInfo(unittest.TestCase):
 
     def test_compile_info(self):
         compiled_args = pyqubes.compile.info(self.info)
-        self.assertEqual(compiled_args, ['echo', '-e', "'\\e[36mpyqubes|Flying circus\\e[39m'"])
+        self.assertEqual(compiled_args, ['echo', '-e', "$'\\e[36mpyqubes|Flying circus\\e[39m'"])
+
+    def test_compile_info_single_quote(self):
+        compiled_args = pyqubes.compile.info("Flying circus'")
+        self.assertEqual(compiled_args, ['echo', '-e', "$'\\e[36mpyqubes|Flying circus\\'\\e[39m'"])
 
     def test_compile_info_no_quote(self):
         compiled_args = pyqubes.compile.info(self.info, quote=False)
@@ -110,5 +114,5 @@ class TestCompileInfo(unittest.TestCase):
 
     def test_compile_info_no_style(self):
         compiled_args = pyqubes.compile.info(self.info, style=False)
-        self.assertEqual(compiled_args, ['echo', '-e', "'pyqubes|Flying circus'"])
+        self.assertEqual(compiled_args, ['echo', '-e', "$'pyqubes|Flying circus'"])
 

@@ -69,6 +69,7 @@ def info(info, quote=True, style=True):
     if style:
         info = '\e[36m{0}\e[39m'.format(info)
     if quote:
-        info = '\'{0}\''.format(info)
+        info = info.replace("'", "\\'")
+        info = '$\'{0}\''.format(info)
     return ['echo', '-e', info]
 
