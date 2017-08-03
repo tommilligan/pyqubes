@@ -52,6 +52,7 @@ class VM(object):
         self.name = pyqubes.validate.linux_hostname(name)
         self.proactive = proactive
         self.operating_system = operating_system
+        self.preferences = {}
         
         self.enact_function = pyqubes.enact.call if proactive else pyqubes.enact.echo
             
@@ -144,6 +145,13 @@ class VM(object):
         '''
         self.info('Removing')
         return self.enact(pyqubes.qvm.qvm_remove(self.name, **kwargs))
+
+    def prefs(self, **kwargs):
+        '''
+        Manage VM settings
+        '''
+        self.info('Managing settings')
+        return self.enact(pyqubes.qvm.qvm_prefs(self.name, **kwargs))
 
     # Helper functions
 

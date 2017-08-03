@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 '''
 The ``compile`` module converts instructions from pythonic data structures
-into flat lists.abs
+into flat lists.
 
 These may require further processing before being passed to the
 ``enact`` module for action.

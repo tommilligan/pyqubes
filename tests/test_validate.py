@@ -120,3 +120,19 @@ class TestvalidateLabelColor(unittest.TestCase):
         with self.assertRaises(ValueError):
             valid_input_string = pyqubes.validate.label_color(input_string)
 
+class TestvalidatePrefName(unittest.TestCase):
+    def test_validate_pref_name_valid(self):
+        input_string = "orange_12"
+        valid_input_string = pyqubes.validate.pref_name(input_string)
+        self.assertEqual(valid_input_string, input_string)
+
+    def test_validate_pref_name_invalid_string(self):
+        input_string = "foox bar"
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.pref_name(input_string)
+
+    def test_validate_pref_name_invalid_length_zero(self):
+        input_string = ""
+        with self.assertRaises(ValueError):
+            valid_input_string = pyqubes.validate.pref_name(input_string)
+

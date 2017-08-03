@@ -181,3 +181,19 @@ def qvm_remove(vm_name,
     }))
     return command_args
 
+def qvm_prefs(vm_name,
+            list_view=True,
+            get_pref='',
+            set_prefs={}):
+    '''
+    qvm-prefs
+    '''
+    set_compiled = ' '.join(pyqubes.utils.flatten_list([[k, v] for k, v in six.iteritems(set_prefs)]))
+
+    command_args = ["qvm-prefs", pyqubes.validate.linux_hostname(vm_name)]
+    command_args.extend(pyqubes.compile.flags_store({
+        '--get': pyqubes.validate.pref_name(get_pref) if get_pref else None,
+        '--set': set_compiled,
+    }))
+    return command_args
+

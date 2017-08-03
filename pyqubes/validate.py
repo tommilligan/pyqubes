@@ -74,3 +74,15 @@ def label_color(color):
     else:
         return color
 
+def pref_name(name):
+    '''
+    qvm-pref preference name strings should match ``^[a-zA-Z0-9_]+$``
+
+    :param string name: Name to check
+    :returns: ``name`` if valid, else ``ValueError``
+    '''
+    if not re.match(r'^[a-zA-Z0-9_]+$', name):
+        raise ValueError('Invalid qvm-pref key: {0}'.format(name))
+    else:
+        return name
+
